@@ -1,0 +1,178 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(145deg, #ff9a5a, #ff6b4a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', 'Poppins', 'Comic Neue', cursive;
+    overflow: hidden;
+    position: relative;
+}
+
+.card {
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 250, 235, 0.96);
+    backdrop-filter: blur(4px);
+    border-radius: 70px;
+    padding: 2rem 3rem 4rem;
+    text-align: center;
+    box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+    max-width: 90%;
+    width: 700px;
+    min-height: 400px;
+    overflow: visible;
+    transition: box-shadow 0.3s;
+}
+
+.birthday-text {
+    font-size: 3rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #c53a1f, #f7b42c);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 2px 2px 15px rgba(0,0,0,0.1);
+    margin: 1rem 0;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+.birthday-text.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.hamster-zone {
+    position: relative;
+    margin-top: 20px;
+    height: 200px; 
+}
+
+.hamster {
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.35s ease-in-out;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+    width: 180px; 
+    pointer-events: auto;
+    touch-action: manipulation;
+    z-index: 40;
+    display: block;
+}
+
+.hamster-left {
+    left: 12px;
+    bottom: -80px; 
+    transform: translateX(-40px) translateY(80px);
+    opacity: 1;
+    transition: transform 0.45s cubic-bezier(0.2,0.8,0.2,1), opacity 0.3s, bottom 0.45s;
+    z-index: 38;
+}
+.hamster-right {
+    right: 12px;
+    bottom: -80px; 
+    transform: translateX(40px) translateY(80px); 
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.45s cubic-bezier(0.2,0.8,0.2,1), opacity 0.3s, bottom 0.45s;
+    z-index: 38;
+}
+.hamster-main {
+    left: 50%;
+    transform: translate(-50%, 100%);
+    bottom: 0;
+    width: 220px; 
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.4s, bottom 0.35s;
+    z-index: 60; 
+}
+.hamster-main.show {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hamster-left:hover, .hamster-right:hover {
+    filter: drop-shadow(0 12px 18px rgba(0,0,0,0.3));
+    transform: scale(1.03) translateX(0) translateY(0);
+    bottom: 0; /* немного выезжают внутрь карточки */
+}
+
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5; 
+}
+
+.pass-image {
+    width: 140px;
+    display: block;
+    margin: 12px auto 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.45s cubic-bezier(0.2,0.8,0.2,1);
+    position: relative;
+    z-index: 5; 
+    pointer-events: none; 
+}
+.pass-image.show {
+    width: 380px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mobile adjustments */
+@media (max-width: 900px) {
+    .card { width: 92%; padding: 1.6rem 1.6rem 3rem; border-radius: 36px; }
+    .birthday-text { font-size: 2.4rem; }
+    .hamster-zone { height: 150px; }
+    .hamster { width: 140px; }
+    .hamster-main { width: 180px; }
+    .pass-image.show { width: 260px; }
+}
+
+@media (max-width: 480px) {
+    body { background: linear-gradient(145deg, #ff8a4a, #ff6b4a); }
+    .card { padding: 1rem 1rem 2rem; border-radius: 24px; }
+    .birthday-text { font-size: 1.4rem; }
+    .hamster-zone { height: 120px; }
+    .hamster { width: 120px; }
+    .hamster-main { width: 160px; }
+    .hamster-left, .hamster-right { bottom: -60px; }
+    .hamster-left { left: 25px; }
+    .hamster-right { right: 8px; }
+    .pass-image { width: 120px; }
+    .hamster-bubble { font-size: 12px; padding: 6px 8px; }
+}
+
+@keyframes hamJumpBottom {
+    0% { bottom: 0; }
+    30% { bottom: 36px; }
+    65% { bottom: 8px; }
+    100% { bottom: 0; }
+}
+
+@keyframes gentleBounce {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, -12px); }
+}
+.hamster-main.attention {
+    animation: gentleBounce 0.8s ease-in-out 10; 
+}
+
+.jump-bottom {
+    animation: hamJumpBottom 520ms cubic-bezier(0.22,1,0.36,1);
+}
