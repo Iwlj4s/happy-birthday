@@ -112,6 +112,8 @@ body {
     filter: drop-shadow(0 12px 18px rgba(0,0,0,0.3));
     transform: scale(1.03) translateX(0) translateY(0);
     bottom: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 /* Класс для финального состояния боковых хомяков (после появления главного) */
@@ -121,6 +123,8 @@ body {
     opacity: 1;
     pointer-events: auto;
     filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 #confetti-canvas {
