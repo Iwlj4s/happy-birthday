@@ -53,24 +53,26 @@ body {
 .hamster-zone {
     position: relative;
     margin-top: 20px;
-    height: 200px; 
+    height: 200px;
 }
 
 .hamster {
     position: absolute;
     cursor: pointer;
     transition: all 0.35s ease-in-out;
-    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
-    width: 180px; 
+    width: 180px;
     pointer-events: auto;
     touch-action: manipulation;
     z-index: 40;
     display: block;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 .hamster-left {
     left: 12px;
-    bottom: -80px; 
+    bottom: -80px;
     transform: translateX(-40px) translateY(80px);
     opacity: 1;
     transition: transform 0.45s cubic-bezier(0.2,0.8,0.2,1), opacity 0.3s, bottom 0.45s;
@@ -78,8 +80,8 @@ body {
 }
 .hamster-right {
     right: 12px;
-    bottom: -80px; 
-    transform: translateX(40px) translateY(80px); 
+    bottom: -80px;
+    transform: translateX(40px) translateY(80px);
     opacity: 0;
     pointer-events: none;
     transition: transform 0.45s cubic-bezier(0.2,0.8,0.2,1), opacity 0.3s, bottom 0.45s;
@@ -89,22 +91,32 @@ body {
     left: 50%;
     transform: translate(-50%, 100%);
     bottom: 0;
-    width: 220px; 
+    width: 220px;
     opacity: 0;
     pointer-events: none;
     transition: transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.4s, bottom 0.35s;
-    z-index: 60; 
+    z-index: 60;
 }
 .hamster-main.show {
     transform: translate(-50%, 0);
     opacity: 1;
     pointer-events: auto;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
 }
 
 .hamster-left:hover, .hamster-right:hover {
     filter: drop-shadow(0 12px 18px rgba(0,0,0,0.3));
     transform: scale(1.03) translateX(0) translateY(0);
-    bottom: 0; /* немного выезжают внутрь карточки */
+    bottom: 0;
+}
+
+/* Класс для финального состояния боковых хомяков (после появления главного) */
+.hamster-left.final, .hamster-right.final {
+    transform: translateX(0) translateY(0);
+    bottom: 0;
+    opacity: 1;
+    pointer-events: auto;
+    filter: drop-shadow(0 8px 12px rgba(0,0,0,0.2));
 }
 
 #confetti-canvas {
@@ -114,7 +126,7 @@ body {
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 5; 
+    z-index: 5;
 }
 
 .pass-image {
@@ -125,8 +137,8 @@ body {
     transform: translateY(10px);
     transition: all 0.45s cubic-bezier(0.2,0.8,0.2,1);
     position: relative;
-    z-index: 5; 
-    pointer-events: none; 
+    z-index: 5;
+    pointer-events: none;
 }
 .pass-image.show {
     width: 380px;
@@ -152,10 +164,10 @@ body {
     .hamster { width: 120px; }
     .hamster-main { width: 160px; }
     .hamster-left, .hamster-right { bottom: -60px; }
+    .hamster-left.final, .hamster-right.final { bottom: 0; }
     .hamster-left { left: 25px; }
     .hamster-right { right: 8px; }
     .pass-image { width: 120px; }
-    .hamster-bubble { font-size: 12px; padding: 6px 8px; }
 }
 
 @keyframes hamJumpBottom {
@@ -170,7 +182,7 @@ body {
     50% { transform: translate(-50%, -12px); }
 }
 .hamster-main.attention {
-    animation: gentleBounce 0.8s ease-in-out 10; 
+    animation: gentleBounce 0.8s ease-in-out 10;
 }
 
 .jump-bottom {

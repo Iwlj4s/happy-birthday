@@ -1,5 +1,4 @@
 (function() {
-    // -------------- Конфетти (взрыв вокруг центра элемента) --------------
     const canvas = document.getElementById('confetti-canvas');
     const ctx = canvas.getContext('2d');
     let width = window.innerWidth;
@@ -119,7 +118,7 @@
         leftHamster.style.pointerEvents = 'none';
         rightHamster.style.opacity = '1';
         rightHamster.style.pointerEvents = 'auto';
-        rightHamster.style.transform = 'translateX(0) translateY(0)'; // полный сброс
+        rightHamster.style.transform = 'translateX(0) translateY(0)';
         const card = document.querySelector('.card');
         card.style.transform = 'scale(1.01)';
         setTimeout(() => card.style.transform = '', 200);
@@ -133,31 +132,33 @@
         }, 100);
         birthdayText.classList.add('show');
         startBackgroundConfetti();
-        try {
-            leftHamster.src = 'hamster-left.png';
-            rightHamster.src = 'hamster-right.png';
-        } catch (e) {}
-        leftHamster.style.opacity = '1';
-        leftHamster.style.pointerEvents = 'auto';
-        leftHamster.style.visibility = 'visible';
-        leftHamster.style.display = 'block';
-        leftHamster.style.transform = 'translateX(0) translateY(0)';
-        leftHamster.style.bottom = '0';
-        leftHamster.classList.remove('jump-bottom');
 
-        rightHamster.style.opacity = '1';
-        rightHamster.style.pointerEvents = 'auto';
-        rightHamster.style.visibility = 'visible';
-        rightHamster.style.display = 'block';
-        rightHamster.style.transform = 'translateX(0) translateY(0)';
-        rightHamster.style.bottom = '0';
+        leftHamster.style.opacity = '';
+        leftHamster.style.pointerEvents = '';
+        leftHamster.style.visibility = '';
+        leftHamster.style.display = '';
+        leftHamster.style.transform = '';
+        leftHamster.style.bottom = '';
+
+        rightHamster.style.opacity = '';
+        rightHamster.style.pointerEvents = '';
+        rightHamster.style.visibility = '';
+        rightHamster.style.display = '';
+        rightHamster.style.transform = '';
+        rightHamster.style.bottom = '';
+
+        leftHamster.src = 'hamster-left.png';
+        rightHamster.src = 'hamster-right.png';
+
+        leftHamster.classList.add('final');
+        rightHamster.classList.add('final');
+        leftHamster.classList.remove('jump-bottom');
         rightHamster.classList.remove('jump-bottom');
 
         if (!window._leftHamsterEmitter) {
             window._leftHamsterEmitter = setInterval(() => {
                 const c = getCenter(leftHamster);
-                const count = 1 + Math.floor(Math.random()*1);
-                for (let i=0;i<count;i++) {
+                for (let i = 0; i < 1; i++) {
                     if (particles.length > MAX_PARTICLES) break;
                     particles.push(new ConfettiParticle(c.x + (Math.random()*36-18), c.y - 6, {
                         size: 4 + Math.random()*3,
@@ -170,22 +171,22 @@
                 }
             }, 420);
         }
-
-        window._rightHamsterEmitter = setInterval(() => {
-            const c = getCenter(rightHamster);
-            const count = 1 + Math.floor(Math.random()*2);
-            for (let i=0;i<count;i++) {
-                if (particles.length > MAX_PARTICLES) break;
-                particles.push(new ConfettiParticle(c.x + (Math.random()*36-18), c.y - 6, {
-                    size: 4 + Math.random()*3,
-                    speedXRange: 1.0,
-                    speedY: 0.3 + Math.random()*0.6,
-                    gravity: 0.04,
-                    decay: 0.01,
-                    color: `hsl(${Math.random()*60+180},70%,60%)`
-                }));
-            }
-        }, 420);
+        if (!window._rightHamsterEmitter) {
+            window._rightHamsterEmitter = setInterval(() => {
+                const c = getCenter(rightHamster);
+                for (let i = 0; i < 2; i++) {
+                    if (particles.length > MAX_PARTICLES) break;
+                    particles.push(new ConfettiParticle(c.x + (Math.random()*36-18), c.y - 6, {
+                        size: 4 + Math.random()*3,
+                        speedXRange: 1.0,
+                        speedY: 0.3 + Math.random()*0.6,
+                        gravity: 0.04,
+                        decay: 0.01,
+                        color: `hsl(${Math.random()*60+180},70%,60%)`
+                    }));
+                }
+            }, 420);
+        }
 
         setTimeout(() => {
             const center = getCenter(mainHamster);
@@ -213,8 +214,7 @@
                             const p = document.getElementById('passImage');
                             if (!p) return;
                             const c = getCenter(p);
-                            const count = 2 + Math.floor(Math.random()*3);
-                            for (let i=0;i<count;i++){
+                            for (let i = 0; i < 3; i++) {
                                 particles.push(new ConfettiParticle(c.x + (Math.random()*80-40), c.y + (Math.random()*-30), {
                                     size: 4 + Math.random()*5,
                                     speedXRange: 1.6,
@@ -232,7 +232,6 @@
         });
     }
 
-    leftHamster.addEventListener('pointerenter', moveToRight);
     leftHamster.addEventListener('pointerdown', (ev) => {
         if (!mainHamster.classList.contains('show')) {
             moveToRight();
@@ -245,11 +244,19 @@
         ev.stopPropagation();
     });
 
-    rightHamster.addEventListener('pointerenter', () => {
-        if (step1completed) {
-            showMainHamster();
+    leftHamster.addEventListener('touchstart', (ev) => {
+        ev.preventDefault();
+        if (!mainHamster.classList.contains('show')) {
+            moveToRight();
+        } else {
+            mainHamster.classList.remove('attention');
+            triggerJump(leftHamster);
+            const c = getCenter(leftHamster);
+            explodeConfetti(c.x, c.y - 10, 30);
         }
+        ev.stopPropagation();
     });
+
     rightHamster.addEventListener('pointerdown', (ev) => {
         if (!step1completed) {
             moveToRight();
@@ -260,8 +267,27 @@
             triggerJump(rightHamster);
             const c = getCenter(rightHamster);
             explodeConfetti(c.x, c.y - 10, 30);
-            ev.stopPropagation();
         }
+        ev.stopPropagation();
+    });
+    rightHamster.addEventListener('touchstart', (ev) => {
+        ev.preventDefault();
+        if (!step1completed) {
+            moveToRight();
+        } else if (!mainHamster.classList.contains('show')) {
+            showMainHamster();
+        } else {
+            mainHamster.classList.remove('attention');
+            triggerJump(rightHamster);
+            const c = getCenter(rightHamster);
+            explodeConfetti(c.x, c.y - 10, 30);
+        }
+        ev.stopPropagation();
+    });
+
+    leftHamster.addEventListener('pointerenter', moveToRight);
+    rightHamster.addEventListener('pointerenter', () => {
+        if (step1completed) showMainHamster();
     });
 
     function triggerJump(el) {
