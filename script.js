@@ -127,33 +127,20 @@
     function showMainHamster() {
         if (mainHamster.classList.contains('show')) return;
         mainHamster.classList.add('show');
-        setTimeout(() => {
-            mainHamster.classList.add('attention');
-        }, 100);
+        setTimeout(() => mainHamster.classList.add('attention'), 100);
         birthdayText.classList.add('show');
         startBackgroundConfetti();
 
-        leftHamster.style.opacity = '';
-        leftHamster.style.pointerEvents = '';
-        leftHamster.style.visibility = '';
-        leftHamster.style.display = '';
-        leftHamster.style.transform = '';
-        leftHamster.style.bottom = '';
-
-        rightHamster.style.opacity = '';
-        rightHamster.style.pointerEvents = '';
-        rightHamster.style.visibility = '';
-        rightHamster.style.display = '';
-        rightHamster.style.transform = '';
-        rightHamster.style.bottom = '';
-
-        leftHamster.src = 'hamster-left.png';
-        rightHamster.src = 'hamster-right.png';
+        leftHamster.removeAttribute('style');
+        rightHamster.removeAttribute('style');
 
         leftHamster.classList.add('final');
         rightHamster.classList.add('final');
         leftHamster.classList.remove('jump-bottom');
         rightHamster.classList.remove('jump-bottom');
+
+        leftHamster.src = 'hamster-left.png';
+        rightHamster.src = 'hamster-right.png';
 
         if (!window._leftHamsterEmitter) {
             window._leftHamsterEmitter = setInterval(() => {
@@ -199,7 +186,7 @@
 
         mainHamster.style.cursor = 'pointer';
         let mainFirstClick = false;
-        mainHamster.addEventListener('pointerdown', (e) => {
+        mainHamster.addEventListener('click', (e) => {
             mainHamster.classList.remove('attention');
             triggerJump(mainHamster);
             const c = getCenter(mainHamster);
@@ -232,45 +219,21 @@
         });
     }
 
-    leftHamster.addEventListener('pointerdown', (ev) => {
-        if (!mainHamster.classList.contains('show')) {
-            moveToRight();
-        } else {
-            mainHamster.classList.remove('attention');
-            triggerJump(leftHamster);
-            const c = getCenter(leftHamster);
-            explodeConfetti(c.x, c.y - 10, 30);
-        }
-        ev.stopPropagation();
-    });
-
-    leftHamster.addEventListener('touchstart', (ev) => {
+    const leftHandler = (ev) => {
         ev.preventDefault();
         if (!mainHamster.classList.contains('show')) {
-            moveToRight();
+            if (!step1completed) moveToRight();
         } else {
             mainHamster.classList.remove('attention');
             triggerJump(leftHamster);
             const c = getCenter(leftHamster);
             explodeConfetti(c.x, c.y - 10, 30);
         }
-        ev.stopPropagation();
-    });
+    };
+    leftHamster.addEventListener('click', leftHandler);
+    leftHamster.addEventListener('touchstart', leftHandler, { passive: false });
 
-    rightHamster.addEventListener('pointerdown', (ev) => {
-        if (!step1completed) {
-            moveToRight();
-        } else if (!mainHamster.classList.contains('show')) {
-            showMainHamster();
-        } else {
-            mainHamster.classList.remove('attention');
-            triggerJump(rightHamster);
-            const c = getCenter(rightHamster);
-            explodeConfetti(c.x, c.y - 10, 30);
-        }
-        ev.stopPropagation();
-    });
-    rightHamster.addEventListener('touchstart', (ev) => {
+    const rightHandler = (ev) => {
         ev.preventDefault();
         if (!step1completed) {
             moveToRight();
@@ -282,13 +245,9 @@
             const c = getCenter(rightHamster);
             explodeConfetti(c.x, c.y - 10, 30);
         }
-        ev.stopPropagation();
-    });
-
-    leftHamster.addEventListener('pointerenter', moveToRight);
-    rightHamster.addEventListener('pointerenter', () => {
-        if (step1completed) showMainHamster();
-    });
+    };
+    rightHamster.addEventListener('click', rightHandler);
+    rightHamster.addEventListener('touchstart', rightHandler, { passive: false });
 
     function triggerJump(el) {
         if (!el) return;
