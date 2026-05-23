@@ -104,7 +104,6 @@ body {
     pointer-events: auto;
 }
 
-/* Финальное состояние боковых хомяков (после появления главного) */
 .hamster-left.final, .hamster-right.final {
     transform: translateX(0) translateY(0);
     bottom: 0;
